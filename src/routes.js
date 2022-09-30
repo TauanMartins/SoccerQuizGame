@@ -1,16 +1,24 @@
-import {BrowserRouter, Routes, Route } from 'react-router-dom';
-import React from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { Fragment } from "react";
 import Home from './pages/Home';
 import Game from './pages/Game';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
-function RoutesApp(){
-    return(
+function RoutesApp() {
+    return (
         <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Home/>}/>
-            <Route path="/game" element={<Game/>}/>
-        </Routes>
+            <Fragment>
+            <Header/>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/game" element={<Game />} />
+                    </Routes>
+                    
+                <Footer />
+            </Fragment>
         </BrowserRouter>
+
     )
 }
 

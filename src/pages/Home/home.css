@@ -1,0 +1,21 @@
+.Home {
+    margin: 0;
+    height: 100%;
+    text-align: center;
+}
+
+.container {
+    width: 100%;
+}
+a:hover{
+    text-decoration: none;
+}
+.Button:hover{
+    color: white;
+    
+}
+.Button {
+    color: black;
+    margin-top: 10em;
+    padding: 1%;
+}

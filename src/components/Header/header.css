@@ -1,0 +1,13 @@
+hr {
+  margin: 0;
+}
+a{
+  padding: 3em;
+}
+.Header {
+  text-align: center;
+  background: yellow;
+  width: 100%;
+  height: 5rem;
+
+}
