@@ -1,14 +1,24 @@
 import React, { Fragment } from "react";
+import './home.css';
 import { Link } from "react-router-dom";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
+import { Button, Container, Row, Col } from "reactstrap";
 
-export default function Home(){
-    return(
+export default function Home() {
+    return (
         <Fragment>
-            <Header/>
-            <Link to="/game">Play</Link>
-            <Footer/>
+            <div className="Home">
+                <Container fluid>
+                    <Row>
+                        <Col>
+                            <Link  to="/game" >
+                                <Button className="Button" block size="lg" color="primary" >
+                                    Jogar
+                                </Button>
+                            </Link>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
         </Fragment>
     )
 }

@@ -1,9 +1,26 @@
 import React, { Fragment } from "react";
+import './footer.css';
+import { Row, Col, Label, Container } from "reactstrap";
 
-export default function Footer(){
-    return(
+export default function Footer() {
+    return (
         <Fragment>
-            <h2>FOOTER</h2>
+            <div className="Footer">
+                <hr />
+                <Container fluid>
+                    <Row>
+                        <Col>
+                            <Label>Tauan</Label>
+                        </Col>
+                        <Col>
+                            <Label>Footer</Label>
+                        </Col>
+                        <Col>
+                            <Label>Copyright</Label>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
         </Fragment>
     )
 }
