@@ -1,5 +1,25 @@
 .Game {
-    margin: 0;
-    height: 100%;
     text-align: center;
+    bottom: 0;
+    height: 85vh;
+    padding: 20px;
+    padding-bottom: 0px;
 }
+
+.Game .Button {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    padding: 10%;
+    margin: 4px;
+
+}
+
+
+.img {
+    height: 300px;
+
+}
+
+
+

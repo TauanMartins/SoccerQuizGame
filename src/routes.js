@@ -9,12 +9,13 @@ function RoutesApp() {
     return (
         <BrowserRouter>
             <Fragment>
-            <Header/>
+                <Header />
+                <div className='Body'>
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/game" element={<Game />} />
                     </Routes>
-                    
+                </div>
                 <Footer />
             </Fragment>
         </BrowserRouter>

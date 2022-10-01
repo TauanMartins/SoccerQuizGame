@@ -28,7 +28,6 @@ export default function Header() {
                     </Row>
                 </Container>
             </div>
-            <hr />
         </Fragment>
     )
 }

@@ -10,9 +10,11 @@ export default function Home() {
                 <Container fluid>
                     <Row>
                         <Col>
-                            <Link  to="/game" >
-                                <Button className="Button" block size="lg" color="primary" >
+                            <Link to="/game" >
+                                <Button className="Button" size="lg" color="primary" >
+
                                     Jogar
+
                                 </Button>
                             </Link>
                         </Col>
