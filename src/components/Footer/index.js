@@ -6,7 +6,6 @@ export default function Footer() {
     return (
         <Fragment>
             <div className="Footer">
-                <hr />
                 <Container fluid>
                     <Row>
                         <Col>

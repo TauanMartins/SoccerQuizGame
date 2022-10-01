@@ -1,21 +1,30 @@
 .Home {
     margin: 0;
     height: 100%;
+    width: 100%;
     text-align: center;
+
 }
 
-.container {
+
+.Home .Button {
+    text-align: center;
+    border: 0px;
+    width: 25%;
+    padding: 2%;
+    margin: 3%;
+
+}
+
+.Home .Button a {
+    text-align: center;
+    display: inline-block;
     width: 100%;
-}
-a:hover{
-    text-decoration: none;
-}
-.Button:hover{
-    color: white;
-    
-}
-.Button {
+    height: 100%;
     color: black;
-    margin-top: 10em;
-    padding: 1%;
+}
+
+.Home .Button a:hover {
+    text-decoration: none;
+    color: white;
 }
