@@ -42,6 +42,11 @@ export default function Game() {
     }, [])
 
     useEffect(() => {
+        console.log(players);
+        if(question>1000){
+            setPlayers(true)
+            setSelectedPlayer(true)
+        }
     }, [question])
     return (
         <Fragment>
