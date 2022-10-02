@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { Label } from "reactstrap";
-
+import api from "../../services/api";
 
 function Question({ player, rawParameters, rawQuestions, answersF, correctAnswerF }, ref) {
 
@@ -65,12 +65,21 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 answersF([30, player.age, 28, 23])
                 break;
             case 4:
+                let nation;
+                async function getNameCountries() {
+                    const response = await api.get(`api/nations/${player.nation}`).then(value => {
+                        const json = value.data;
+                        nation = json.nation.name;
+                        correctAnswerF(nation)
+                        return answersF(['México', 'Russia', nation, 'Malta'])
+                    })
+                    return response;
+                }
+                getNameCountries()
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.nation)
                 setCorrectAnswer(player.nation)
-                correctAnswerF(player.nation)
-                setAnswers([48, 56, player.nation, 25])
-                answersF([48, 56, player.nation, 25])
+                setAnswers(['México', 'Russia', nation, 'Malta'])
                 break;
             case 5:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
@@ -78,7 +87,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setCorrectAnswer(player.foot)
                 correctAnswerF(player.foot)
                 let answer = player.foot;
-                let answerOposite = answer == 'Left' ? 'Right' : 'Left';
+                let answerOposite = answer === 'Left' ? 'Right' : 'Left';
                 setAnswers([player.foot, answerOposite])
                 answersF([player.foot, answerOposite])
                 break;
@@ -109,7 +118,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             player(listPlayers[0]);
 
             // é mostrado o jogador
-            //console.log(listPlayers[0])
+            console.log(listPlayers[0])
 
             // gera a questão sobre o primeiro jogador especificado
             generateQuestion(listPlayers[0])
@@ -121,7 +130,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             var next_player = players.indexOf(selectedPlayer, 0) + 1;
 
             // é mostrado o novo jogador
-            //console.log(players[next_player])
+            console.log(players[next_player])
 
             // é gerada uma questão sobre esse jogador
             generateQuestion(players[next_player])
@@ -135,10 +144,10 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
         },
         ...{ selectedPlayer: selectedPlayer, players: players }
     }
-    
+
     useEffect(() => {
         // lixo que reclamam por n usar:
-        if(questionAbout==='lixo'){
+        if (questionAbout === 'lixo') {
             let lixo = (questionAbout, correctAnswer, answers)
             console.log(lixo)
         }

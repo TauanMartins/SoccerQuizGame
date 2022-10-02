@@ -76,11 +76,11 @@ export default function Game() {
 
     function evaluator(value) {
         if (question === 10 && !validate) {
-            if (value == correctAnswer) {
+            if (String(value) === String(correctAnswer)) {
                 return setScore(score + 1)
             }
         } else if (!validate) {
-            if (value == correctAnswer) {
+            if (String(value) === String(correctAnswer)) {
                 return setScore(score + 1)
             }
         }
