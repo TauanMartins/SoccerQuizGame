@@ -7,6 +7,11 @@ function Timer({ timeOut }, ref) {
     var timer = '';
 
     ref.current = {
+        stopTimer: function(){
+            clearTimeout(timer);
+            return setCounter(0);
+            
+        },
         restartTimer: function () {
             clearTimeout(timer);
             return setCounter(seconds);
