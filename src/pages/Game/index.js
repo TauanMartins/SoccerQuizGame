@@ -3,7 +3,6 @@ import './game.css';
 import { Row, Col, Card, CardTitle, CardText, Button, Label } from "reactstrap";
 import Timer from "../../components/Timer";
 import Question from "../../components/Question";
-import axios from "axios";
 import api from "../../services/api";
 
 export default function Game() {
@@ -11,7 +10,7 @@ export default function Game() {
     const [validate, setValidate] = useState(false);
 
     const [selectedPlayer, setSelectedPlayer] = useState([{ name: '' }]);
-    //const [selectedPlayerIMG, setSelectedPlayerIMG] = useState(undefined);
+    const [selectedPlayerIMG, setSelectedPlayerIMG] = useState(undefined);
 
     const [correctAnswer, setCorrectAnswer] = useState();
     const [answers, setAnswers] = useState([]);
@@ -37,15 +36,15 @@ export default function Game() {
     const QuestionRef = useRef(null);
 
     async function getImage(id) {
-        const res = await axios.get(`https://futdb.app/api/players/${id}/image`, {
+        const response = await fetch(`https://futdb.app/api/players/${id}/image`, {
             headers: {
-                "Content-Type": "image/png",
-                'Accept': "*/*"
+                'Content-Type': 'image/png',
+                "x-auth-token": '4c79e552-34cb-44cc-bcc7-518299c8e98a'
             }
-        })
-        //let d = Buffer.from(res.data).toString('base64')
-        //onsole.log(d)
-        return res
+        });
+        const imageBlob = await response.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setSelectedPlayerIMG(imageObjectURL)
 
     }
     async function getPlayers() {
@@ -135,14 +134,14 @@ export default function Game() {
                                                 </Label>
                                             </Col>
                                         </Row>
-                                            <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={'data:image/png;base64,'} />
+                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG} />
                                         <Row>
                                             <Col>
                                                 <Question
                                                     player={dataPlayer => { setSelectedPlayer(dataPlayer); getImage(dataPlayer.id) }}
                                                     rawQuestions={rawQuestions}
                                                     rawParameters={rawParameters}
-                                                    answersF={e => setAnswers(e) }
+                                                    answersF={e => setAnswers(e)}
                                                     correctAnswerF={e => setCorrectAnswer(e)}
                                                     ref={QuestionRef} />
                                                 <br />

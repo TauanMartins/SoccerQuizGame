@@ -37,16 +37,16 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setQuestion(rawQuestions.height)
                 setCorrectAnswer(player.height)
                 correctAnswerF(player.height)
-                setAnswers([player.height, 175, 182, 185])
-                answersF([player.height, 175, 182, 185])
+                setAnswers([player.height, player.height-3, player.height+4, player.height+7])
+                answersF([player.height, player.height-3, player.height+4, player.height+7])
                 break;
             case 1:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.weight)
                 setCorrectAnswer(player.weight)
                 correctAnswerF(player.weight)
-                setAnswers([75, 80, player.weight, 85])
-                answersF([75, 80, player.weight, 85])
+                setAnswers([player.weight+6, player.weight+2, player.weight, player.weight-4])
+                answersF([player.weight+6, player.weight+2, player.weight, player.weight-4])
                 break;
             case 2:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
@@ -61,7 +61,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setQuestion(rawQuestions.age)
                 setCorrectAnswer(player.age)
                 correctAnswerF(player.age)
-                setAnswers([30, player.age, 28, 23])
+                setAnswers([player.age+2, player.age, player.age-3, player.age+1])
                 answersF([30, player.age, 28, 23])
                 break;
             case 4:
