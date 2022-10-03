@@ -21,7 +21,6 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
         // Retornando array com aleatoriedade
-        console.log('shuffled:', arr)
         return arr;
     }
     function generateQuestion(player) {
@@ -86,7 +85,6 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                         const json = value.data;
                         nation = json.nation.name;
                         correctAnswerF(nation)
-                        console.log('nação do camarada: ', nation)
                         return answersF(shuffleArray([nation,
                             String(nationsShuffled[0]) === String(nation) ? nationsShuffled[1] : nationsShuffled[0],
                             String(nationsShuffled[5]) === String(nation) ? nationsShuffled[6] : nationsShuffled[5],
@@ -147,7 +145,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             player(listPlayers[0]);
 
             // é mostrado o jogador
-            console.log(listPlayers[0])
+            //console.log(listPlayers[0])
 
             // gera a questão sobre o primeiro jogador especificado
             generateQuestion(listPlayers[0])
@@ -159,7 +157,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             var next_player = players.indexOf(selectedPlayer, 0) + 1;
 
             // é mostrado o novo jogador
-            console.log(players[next_player])
+            //console.log(players[next_player])
 
             // é gerada uma questão sobre esse jogador
             generateQuestion(players[next_player])
