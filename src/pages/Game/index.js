@@ -4,6 +4,7 @@ import { Row, Col, Card, CardTitle, CardText, Button, Label } from "reactstrap";
 import Timer from "../../components/Timer";
 import Question from "../../components/Question";
 import api from "../../services/api";
+import loading from "../../assets/loading.gif";
 
 export default function Game() {
     const [question, setQuestion] = useState(1);
@@ -54,7 +55,7 @@ export default function Game() {
             }
         });
         const json = await response.data.items;
-        QuestionRef.current.setList(json)
+        QuestionRef.current.setList(json);
 
     }
 
@@ -87,6 +88,7 @@ export default function Game() {
 
     function nextQuestion() {
         console.log("nextQuestion");
+        document.getElementById('img').src = loading;
         if (question !== 10) {
             setQuestion(question + 1);
             QuestionRef.current.nextQuestion();
@@ -110,6 +112,7 @@ export default function Game() {
     return (
         <Fragment>
             <div className="Game">
+
                 <Row>
                     <Col>
                         <Row>
@@ -134,7 +137,7 @@ export default function Game() {
                                                 </Label>
                                             </Col>
                                         </Row>
-                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG} />
+                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG==undefined?loading:selectedPlayerIMG}/>
                                         <Row>
                                             <Col>
                                                 <Question
