@@ -137,7 +137,7 @@ export default function Game() {
                                                 </Label>
                                             </Col>
                                         </Row>
-                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG==undefined?loading:selectedPlayerIMG}/>
+                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG===undefined?loading:selectedPlayerIMG}/>
                                         <Row>
                                             <Col>
                                                 <Question
