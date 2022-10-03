@@ -21,7 +21,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             [arr[i], arr[j]] = [arr[j], arr[i]];
         }
         // Retornando array com aleatoriedade
-        console.log('shuffled:',arr)
+        console.log('shuffled:', arr)
         return arr;
     }
     function generateQuestion(player) {
@@ -77,29 +77,32 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 break;
             case 4:
                 let nation;
-                let nations = ['México', 'Russia', 'Malta', 'Brasil', 'Curaçao', 
-                               'England', 'France', 'South Africa', 'United States',
-                               'Argentina', 'Northern Ireland', 'Australia', 'Congo DR']
+                let nations = ['México', 'Russia', 'Malta', 'Brasil', 'Curaçao',
+                    'England', 'France', 'South Africa', 'United States',
+                    'Argentina', 'Northern Ireland', 'Australia', 'Congo DR']
                 let nationsShuffled = shuffleArray(nations)
                 async function getNameCountries() {
                     const response = await api.get(`api/nations/${player.nation}`).then(value => {
                         const json = value.data;
                         nation = json.nation.name;
                         correctAnswerF(nation)
-                        console.log('nação do camarada: ',nation)
-                        return answersF(shuffleArray([nation, 
-                                                    String(nationsShuffled[0])===String(nation)?nationsShuffled[1]:nationsShuffled[0],
-                                                    String(nationsShuffled[5])===String(nation)?nationsShuffled[6]:nationsShuffled[5], 
-                                                    String(nationsShuffled[8])===String(nation)?nationsShuffled[9]:nationsShuffled[8]]))
+                        console.log('nação do camarada: ', nation)
+                        return answersF(shuffleArray([nation,
+                            String(nationsShuffled[0]) === String(nation) ? nationsShuffled[1] : nationsShuffled[0],
+                            String(nationsShuffled[5]) === String(nation) ? nationsShuffled[6] : nationsShuffled[5],
+                            String(nationsShuffled[8]) === String(nation) ? nationsShuffled[9] : nationsShuffled[8]]))
                     })
                     return response;
                 }
-                
+
                 getNameCountries()
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.nation)
                 setCorrectAnswer(player.nation)
-                setAnswers(shuffleArray(['México', 'Russia', nation, 'Malta']))
+                setAnswers(shuffleArray([nation,
+                    String(nationsShuffled[0]) === String(nation) ? nationsShuffled[1] : nationsShuffled[0],
+                    String(nationsShuffled[5]) === String(nation) ? nationsShuffled[6] : nationsShuffled[5],
+                    String(nationsShuffled[8]) === String(nation) ? nationsShuffled[9] : nationsShuffled[8]]))
                 break;
             case 5:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
@@ -116,8 +119,14 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setQuestion(rawQuestions.position)
                 setCorrectAnswer(player.position)
                 correctAnswerF(player.position)
-                setAnswers(shuffleArray(['GK', player.position, 'RB', 'CB']))
-                answersF(shuffleArray(['GK', player.position, 'RB', 'CB']))
+                setAnswers(shuffleArray([player.position,
+                'GK' === String(player.position) ? 'ST' : 'GK',
+                'RB' === String(player.position) ? 'ST' : 'RB',
+                'CB' === String(player.position) ? 'ST' : 'CB']))
+                answersF(shuffleArray([player.position,
+                'GK' === String(player.position) ? 'ST' : 'GK',
+                'RB' === String(player.position) ? 'ST' : 'RB',
+                'CB' === String(player.position) ? 'ST' : 'CB']))
                 break;
             default:
                 break;

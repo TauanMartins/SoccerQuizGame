@@ -5,6 +5,7 @@ import Timer from "../../components/Timer";
 import Question from "../../components/Question";
 import api from "../../services/api";
 import loading from "../../assets/loading.gif";
+import Endgame from "../../components/Endgame";
 
 export default function Game() {
     const [question, setQuestion] = useState(1);
@@ -16,7 +17,7 @@ export default function Game() {
     const [correctAnswer, setCorrectAnswer] = useState();
     const [answers, setAnswers] = useState([]);
 
-    const [score, setScore] = useState(0)
+    const [score, setScore] = useState(0);
 
 
     const rawParameters = ['height', 'weight', 'birthDate', 'age', 'nation', 'foot', 'position']
@@ -35,6 +36,7 @@ export default function Game() {
 
     const CounterRef = useRef(null);
     const QuestionRef = useRef(null);
+    const EndgameRef = useRef(null);
 
     async function getImage(id) {
         const response = await fetch(`https://futdb.app/api/players/${id}/image`, {
@@ -103,6 +105,7 @@ export default function Game() {
 
     function endgame() {
         console.log("endgame")
+        EndgameRef.current.endgame(score)
     }
 
     useEffect(() => {
@@ -137,7 +140,7 @@ export default function Game() {
                                                 </Label>
                                             </Col>
                                         </Row>
-                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG===undefined?loading:selectedPlayerIMG}/>
+                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG === undefined ? loading : selectedPlayerIMG} />
                                         <Row>
                                             <Col>
                                                 <Question
@@ -196,7 +199,9 @@ export default function Game() {
                     </Col>
                 </Row>
             </div >
+            <Endgame ref={EndgameRef}/>
         </Fragment >
+
     )
 }
 

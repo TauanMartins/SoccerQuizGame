@@ -1,11 +1,22 @@
-
-.Header a{
+.Header a {
   color: black;
 }
-.Header {
-  text-align: center;
-  background: rgb(178, 192, 175);
-  width: 100%;
-  height: 6rem;
-  border-bottom: thin solid gray;
+
+ @media screen {.Header {
+    text-align: center;
+    background: rgb(178, 192, 175);
+    width: 100%;
+    height: 3rem;
+    border-bottom: thin solid gray;
+  }}
+
+@media (max-width:462px) {
+  .Header {
+    text-align: center;
+    background: rgb(178, 192, 175);
+    width: 100%;
+    height: 3rem;
+    border-bottom: none;
+  }
+
 }
