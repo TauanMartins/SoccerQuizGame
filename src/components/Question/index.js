@@ -12,7 +12,18 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
     const [answers, setAnswers] = useState([]);
     var indexRandom = 1;
 
-
+    function shuffleArray(arr) {
+        // Loop em todos os elementos
+        for (let i = arr.length - 1; i > 0; i--) {
+            // Escolhendo elemento aleatório
+            const j = Math.floor(Math.random() * (i + 1));
+            // Reposicionando elemento
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        // Retornando array com aleatoriedade
+        console.log('shuffled:',arr)
+        return arr;
+    }
     function generateQuestion(player) {
         // se por acaso o peso do jogador for 0 (API não preencheu), será gerada outra pergunta
         if (player.weight === 0) {
@@ -37,49 +48,58 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setQuestion(rawQuestions.height)
                 setCorrectAnswer(player.height)
                 correctAnswerF(player.height)
-                setAnswers([player.height, player.height-3, player.height+4, player.height+7])
-                answersF([player.height, player.height-3, player.height+4, player.height+7])
+                setAnswers(shuffleArray([player.height, player.height - 3, player.height + 4, player.height + 7]))
+                answersF(shuffleArray([player.height, player.height - 3, player.height + 4, player.height + 7]))
                 break;
             case 1:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.weight)
                 setCorrectAnswer(player.weight)
                 correctAnswerF(player.weight)
-                setAnswers([player.weight+6, player.weight+2, player.weight, player.weight-4])
-                answersF([player.weight+6, player.weight+2, player.weight, player.weight-4])
+                setAnswers(shuffleArray([player.weight + 6, player.weight + 2, player.weight, player.weight - 4]))
+                answersF(shuffleArray([player.weight + 6, player.weight + 2, player.weight, player.weight - 4]))
                 break;
             case 2:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.birthDate)
                 setCorrectAnswer(player.birthDate)
                 correctAnswerF(player.birthDate)
-                setAnswers(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate])
-                answersF(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate])
+                setAnswers(shuffleArray(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate]))
+                answersF(shuffleArray(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate]))
                 break;
             case 3:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.age)
                 setCorrectAnswer(player.age)
                 correctAnswerF(player.age)
-                setAnswers([player.age+2, player.age, player.age-3, player.age+1])
-                answersF([30, player.age, 28, 23])
+                setAnswers(shuffleArray([player.age + 2, player.age, player.age - 3, player.age + 1]))
+                answersF(shuffleArray([30, player.age, 28, 23]))
                 break;
             case 4:
                 let nation;
+                let nations = ['México', 'Russia', 'Malta', 'Brasil', 'Curaçao', 
+                               'England', 'France', 'South Africa', 'United States',
+                               'Argentina', 'Northern Ireland', 'Australia', 'Congo DR']
+                let nationsShuffled = shuffleArray(nations)
                 async function getNameCountries() {
                     const response = await api.get(`api/nations/${player.nation}`).then(value => {
                         const json = value.data;
                         nation = json.nation.name;
                         correctAnswerF(nation)
-                        return answersF(['México', 'Russia', nation, 'Malta'])
+                        console.log('nação do camarada: ',nation)
+                        return answersF(shuffleArray([nation, 
+                                                    String(nationsShuffled[0])===String(nation)?nationsShuffled[1]:nationsShuffled[0],
+                                                    String(nationsShuffled[5])===String(nation)?nationsShuffled[6]:nationsShuffled[5], 
+                                                    String(nationsShuffled[8])===String(nation)?nationsShuffled[9]:nationsShuffled[8]]))
                     })
                     return response;
                 }
+                
                 getNameCountries()
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.nation)
                 setCorrectAnswer(player.nation)
-                setAnswers(['México', 'Russia', nation, 'Malta'])
+                setAnswers(shuffleArray(['México', 'Russia', nation, 'Malta']))
                 break;
             case 5:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
@@ -88,16 +108,16 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 correctAnswerF(player.foot)
                 let answer = player.foot;
                 let answerOposite = answer === 'Left' ? 'Right' : 'Left';
-                setAnswers([player.foot, answerOposite])
-                answersF([player.foot, answerOposite])
+                setAnswers(shuffleArray([player.foot, answerOposite]))
+                answersF(shuffleArray([player.foot, answerOposite]))
                 break;
             case 6:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.position)
                 setCorrectAnswer(player.position)
                 correctAnswerF(player.position)
-                setAnswers(['GK', player.position, 'KG', 'LG'])
-                answersF(['GK', player.position, 'KG', 'LG'])
+                setAnswers(shuffleArray(['GK', player.position, 'RB', 'CB']))
+                answersF(shuffleArray(['GK', player.position, 'RB', 'CB']))
                 break;
             default:
                 break;
