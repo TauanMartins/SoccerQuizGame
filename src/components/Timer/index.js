@@ -5,12 +5,11 @@ function Timer({ timeOut }, ref) {
     var seconds = 59;
     const [counter, setCounter] = useState(seconds)
     var timer = '';
-
     ref.current = {
-        stopTimer: function(){
+        stopTimer: function () {
             clearTimeout(timer);
             return setCounter(0);
-            
+
         },
         restartTimer: function () {
             clearTimeout(timer);
@@ -34,7 +33,7 @@ function Timer({ timeOut }, ref) {
 
     return (
         <span>
-            <b>Tempo:  0:{counterDisplayer} segundos</b>
+            <b>Tempo:  0:{counterDisplayer<10?'0'+counterDisplayer:counterDisplayer} segundos</b>
         </span>
     )
 }
