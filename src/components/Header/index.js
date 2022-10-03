@@ -17,9 +17,9 @@ export default function Header() {
                         </Col>
                         <Col>
                             <Label>
-                                <h1>
+                                <h3>
                                     Quizz Ball
-                                </h1>
+                                </h3>
                             </Label>
                         </Col>
                         <Col>
