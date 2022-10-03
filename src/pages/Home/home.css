@@ -7,13 +7,25 @@
 }
 
 
-.Home .Button {
-    text-align: center;
-    border: 0px;
-    width: 25%;
-    padding: 2%;
-    margin: 3%;
+@media screen {
+    .Home .Button {
+        text-align: center;
+        border: 0px;
+        width: 25%;
+        padding: 3%;
+        margin: 3%;
 
+    }
+}
+
+@media (max-width:462px) {
+    .Home .Button {
+        text-align: center;
+        border: 0px;
+        width: 25%;
+        padding: 5%;
+        margin: 15%;
+    }
 }
 
 .Home .Button a {
