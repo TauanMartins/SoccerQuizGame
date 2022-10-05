@@ -13,7 +13,17 @@ export default function Home() {
                             <Link to="/game" >
                                 <Button className="Button" size="lg" color="primary" >
 
-                                    Jogar
+                                    {"Jogar"}
+                                    <br />
+                                    {"Nível difícil - Descubra sobre jogadores"}
+                                </Button>
+                                </Link>
+                                <Link to="/game2" >
+                                <Button className="Button" size="lg" color="primary" >
+
+                                    {"Jogar"}
+                                    <br />
+                                    {"Nível médio - Descubra bandeiras"}
 
                                 </Button>
                             </Link>

@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Game from './pages/Game';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Game2 from './pages/Game2';
 
 function RoutesApp() {
     return (
@@ -14,6 +15,7 @@ function RoutesApp() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/game" element={<Game />} />
+                        <Route path="/game2" element={<Game2 />} />
                     </Routes>
                 </div>
                 <Footer />

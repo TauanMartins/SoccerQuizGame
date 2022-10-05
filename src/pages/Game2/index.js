@@ -1,68 +1,66 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
-import './game.css';
+import './game2.css';
 import { Row, Col, Card, CardTitle, CardText, Button, Label } from "reactstrap";
 import Timer from "../../components/Timer";
-import Question from "../../components/Question";
 import api from "../../services/api";
 import loading from "../../assets/loading.gif";
 import Endgame from "../../components/Endgame";
+import { countries } from "../../components/Countries";
 
-export default function Game() {
+export default function Game2() {
     const [question, setQuestion] = useState(1);
     const [validate, setValidate] = useState(false);
 
-    const [selectedPlayer, setSelectedPlayer] = useState([{ name: '' }]);
-    const [selectedPlayerIMG, setSelectedPlayerIMG] = useState(undefined);
 
     const [correctAnswer, setCorrectAnswer] = useState();
     const [answers, setAnswers] = useState([]);
 
     const [score, setScore] = useState(0);
 
+    const rawQuestions = { nationFlag: 'A que nação ela pertence pertence?' }
 
-    const rawParameters = ['height', 'weight', 'birthDate', 'age', 'nation', 'foot', 'position', 'defending', 'dribbling']
-    const rawQuestions = {
-        height: 'Qual é sua altura em cm?',
-        weight: 'Qual seu peso médio em kg?',
-        birthDate: 'Qual sua data de nascimento?',
-        age: 'Qual sua idade?',
-        nation: 'Por qual seleção o jogador atua?',
-        foot: 'Qual seu pé dominante?',
-        position: 'Em que posição joga no campo?',
-        defending: 'Qual dos atributos o jogador tem mais destaque: Defesa ou Drible?',
-        dribbling: 'Qual dos atributos o jogador tem mais destaque: Defesa ou Drible?'
+    var totalPages = 8;
+    var totalNations = 20;
+    var nation;
+    var nations = countries;
+    var nationsShuffled = shuffleArray(nations)
+    function shuffleArray(arr) {
+        // Loop em todos os elementos
+        for (let i = arr.length - 1; i > 0; i--) {
+            // Escolhendo elemento aleatório
+            const j = Math.floor(Math.random() * (i + 1));
+            // Reposicionando elemento
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        // Retornando array com aleatoriedade
+        return arr;
     }
-
-    var totalPages = 811;
-    var currentPage = getRandomInt(1, totalPages)
-
     const CounterRef = useRef(null);
-    const QuestionRef = useRef(null);
     const EndgameRef = useRef(null);
 
-    async function getImage(id) {
-        const response = await fetch(`https://futdb.app/api/players/${id}/image`, {
-            headers: {
-                'Content-Type': 'image/png',
-                "x-auth-token": '4c79e552-34cb-44cc-bcc7-518299c8e98a'
+    async function getCountriesName(page) {
+        const response = await api.get(`https://futdb.app/api/nations?page=${page}`).then(value => {
+            const json = value;
+            var idnation = getRandomInt(1, totalNations);
+            nation = json.data.items[idnation]
+            setCorrectAnswer(nation.name)
+            setAnswers(shuffleArray([nation.name, String(nationsShuffled[83]) === String(nation.name) ? nationsShuffled[84] : nationsShuffled[83]]))
+            async function getFlag(id) {
+                const response = await fetch(`https://futdb.app/api/nations/${id}/image`, {
+                    headers: {
+                        'Content-Type': 'image/png',
+                        "x-auth-token": '4c79e552-34cb-44cc-bcc7-518299c8e98a'
+                    }
+                });
+                const imageBlob = await response.blob();
+                const imageObjectURL = URL.createObjectURL(imageBlob);
+                document.getElementById('img2').style.height = '90px';
+                document.getElementById('img2').src = imageObjectURL;
             }
-        });
-        const imageBlob = await response.blob();
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setSelectedPlayerIMG(imageObjectURL)
-
+            getFlag(nation.id)
+        })
+        return response;
     }
-    async function getPlayers() {
-        const response = await api.get("api/players", {
-            params: {
-                page: currentPage
-            }
-        });
-        const json = await response.data.items;
-        QuestionRef.current.setList(json);
-
-    }
-
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -83,14 +81,14 @@ export default function Game() {
             if (String(value) === String(correctAnswer)) {
                 document.getElementById(question).style.backgroundColor = 'green'
                 return setScore(score + 1)
-            }else{
+            } else {
                 document.getElementById(question).style.backgroundColor = 'red'
             }
         } else if (!validate) {
             if (String(value) === String(correctAnswer)) {
                 document.getElementById(question).style.backgroundColor = 'green'
                 return setScore(score + 1)
-            }else{
+            } else {
                 document.getElementById(question).style.backgroundColor = 'red'
             }
         }
@@ -98,10 +96,12 @@ export default function Game() {
 
     function nextQuestion() {
         console.log("nextQuestion");
-        document.getElementById('img').src = loading;
+        document.getElementById('img2').src = loading;
+        document.getElementById('img2').style.height = '160px';
         if (question !== 10) {
             setQuestion(question + 1);
-            QuestionRef.current.nextQuestion();
+            let page = getRandomInt(1, totalPages);
+            getCountriesName(page)
             CounterRef.current.restartTimer();
         } else {
             setValidate(true);
@@ -117,12 +117,13 @@ export default function Game() {
     }
 
     useEffect(() => {
-        getPlayers()
+        let page = getRandomInt(1, totalPages);
+        getCountriesName(page)
     }, [])
 
     return (
         <Fragment>
-            <div className="Game">
+            <div className="Game2">
 
                 <Row>
                     <Col>
@@ -144,35 +145,39 @@ export default function Game() {
                                                 </Col>
                                                 <Col>
                                                     <Row id='geral'>
-                                                        <Col id="1">
-                                                            1
-                                                        </Col>
-                                                        <Col id="2">
-                                                            2
-                                                        </Col>
-                                                        <Col id="3">
-                                                            3
-                                                        </Col>
-                                                        <Col id="4">
-                                                            4
-                                                        </Col>
-                                                        <Col id="5">
-                                                            5
-                                                        </Col>
-                                                        <Col id="6">
-                                                            6
-                                                        </Col>
-                                                        <Col id="7">
-                                                            7
-                                                        </Col>
-                                                        <Col id="8">
-                                                            8
-                                                        </Col>
-                                                        <Col id="9">
-                                                            9
-                                                        </Col>
-                                                        <Col id="10">
-                                                            10
+                                                        <Col>
+                                                            <Row>
+                                                                <Col className="coluna" id="1">
+                                                                    1
+                                                                </Col>
+                                                                <Col className="coluna" id="2">
+                                                                    2
+                                                                </Col>
+                                                                <Col className="coluna" id="3">
+                                                                    3
+                                                                </Col>
+                                                                <Col className="coluna" id="4">
+                                                                    4
+                                                                </Col>
+                                                                <Col className="coluna" id="5">
+                                                                    5
+                                                                </Col>
+                                                                <Col className="coluna" id="6">
+                                                                    6
+                                                                </Col>
+                                                                <Col className="coluna" id="7">
+                                                                    7
+                                                                </Col>
+                                                                <Col className="coluna" id="8">
+                                                                    8
+                                                                </Col>
+                                                                <Col className="coluna" id="9">
+                                                                    9
+                                                                </Col>
+                                                                <Col className="coluna" id="10">
+                                                                    10
+                                                                </Col>
+                                                            </Row>
                                                         </Col>
                                                     </Row>
                                                 </Col>
@@ -186,21 +191,14 @@ export default function Game() {
                                         <Row>
                                             <Col>
                                                 <Label>
-                                                    <b>Sobre o jogador {selectedPlayer.name} </b>
+                                                    <b>Sobre a bandeira abaixo </b>
                                                 </Label>
                                             </Col>
                                         </Row>
-                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG === undefined ? loading : selectedPlayerIMG} />
+                                        <img className='img2' id="img2" alt={`Bandeira do país achou q eu ia dizer né`} src={loading} />
                                         <Row>
                                             <Col>
-                                                <Question
-                                                    player={dataPlayer => { setSelectedPlayer(dataPlayer); getImage(dataPlayer.id) }}
-                                                    rawQuestions={rawQuestions}
-                                                    rawParameters={rawParameters}
-                                                    answersF={e => setAnswers(e)}
-                                                    correctAnswerF={e => setCorrectAnswer(e)}
-                                                    ref={QuestionRef} />
-                                                <br />
+                                                <Label>{rawQuestions.nationFlag}</Label>
                                             </Col>
                                         </Row>
                                     </CardText>
