@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { Label } from "reactstrap";
 import api from "../../services/api";
+import { countries } from '../Countries';
 
 function Question({ player, rawParameters, rawQuestions, answersF, correctAnswerF }, ref) {
 
@@ -10,8 +11,9 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
     const [questionAbout, setQuestionAbout] = useState();
     const [correctAnswer, setCorrectAnswer] = useState();
     const [answers, setAnswers] = useState([]);
-    var indexRandom = 1;
-
+    var indexRandom = 1;    
+    var nations = countries
+    var nationsShuffled = shuffleArray(nations)
     function shuffleArray(arr) {
         // Loop em todos os elementos
         for (let i = arr.length - 1; i > 0; i--) {
@@ -32,6 +34,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
         } else {
             indexRandom = Math.floor(Math.random() * rawParameters.length)
         }
+        //console.log(player)
         // com base na pegunta aleatória que vier, cairá em um dos switches abaixo
         // a partir daí a sequência é: 
         // 1 -  setar sobre oq é a pergunta. Ex: weight
@@ -76,10 +79,7 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 break;
             case 4:
                 let nation;
-                let nations = ['México', 'Russia', 'Malta', 'Brasil', 'Curaçao',
-                    'England', 'France', 'South Africa', 'United States',
-                    'Argentina', 'Northern Ireland', 'Australia', 'Congo DR']
-                let nationsShuffled = shuffleArray(nations)
+
                 async function getNameCountries() {
                     const response = await api.get(`api/nations/${player.nation}`).then(value => {
                         const json = value.data;
@@ -125,6 +125,36 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 'GK' === String(player.position) ? 'ST' : 'GK',
                 'RB' === String(player.position) ? 'ST' : 'RB',
                 'CB' === String(player.position) ? 'ST' : 'CB']))
+                break;
+            case 7:
+                setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
+                setQuestion(rawQuestions.defending)
+                if (player.defending > player.dribbling) {
+                    setCorrectAnswer(player.defending)
+                    correctAnswerF(player.defending)
+                    setAnswers(shuffleArray(['Defesa', 'Drible']))
+                    answersF(shuffleArray(['Defesa', 'Drible']))
+                } else {
+                    setCorrectAnswer(player.dribbling)
+                    correctAnswerF(player.dribbling)
+                    setAnswers(shuffleArray(['Defesa', 'Drible']))
+                    answersF(shuffleArray(['Defesa', 'Drible']))
+                }
+                break;
+            case 8:
+                setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
+                setQuestion(rawQuestions.dribbling)
+                if (player.defending > player.dribbling) {
+                    setCorrectAnswer(player.defending)
+                    correctAnswerF('Defesa')
+                    setAnswers(shuffleArray(['Defesa', 'Drible']))
+                    answersF(shuffleArray(['Defesa', 'Drible']))
+                } else {
+                    setCorrectAnswer(player.dribbling)
+                    correctAnswerF('Drible')
+                    setAnswers(shuffleArray(['Defesa', 'Drible']))
+                    answersF(shuffleArray(['Defesa', 'Drible']))
+                }
                 break;
             default:
                 break;

@@ -1,9 +1,9 @@
-.Game {
+.Game2 {
     text-align: center;
     padding: 20px;
 }
 
-.Game .Button {
+.Game2 .Button {
     text-align: center;
     height: 90%;
     width: 100%;
@@ -13,9 +13,9 @@
 }
 
 
-.img {
-    height: 160px;
-    width: 160px;
+.img2 {
+    height: 80px;
+    width: 150px;
 
 }
 
@@ -23,5 +23,8 @@
     background-color: lightgray;
 }
 
+.coluna{
+    border: 2;
+}
 
 
