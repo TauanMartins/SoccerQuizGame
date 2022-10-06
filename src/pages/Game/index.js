@@ -1,57 +1,31 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, { Fragment, useEffect, useState, useRef, useMemo, useContext } from "react";
+import { Row, Col, Card, CardTitle, CardText, Button, Label, Container } from "reactstrap";
 import './game.css';
-import { Row, Col, Card, CardTitle, CardText, Button, Label } from "reactstrap";
-import Timer from "../../components/Timer";
+
 import Question from "../../components/Question";
+import { getRandomInt } from "../../components/RandomInt&ShuffledArray";
+
+import Timer from "../../components/Timer";
 import api from "../../services/api";
 import loading from "../../assets/loading.gif";
 import Endgame from "../../components/Endgame";
+import { GlobalState } from "../../components/GlobalState";
 
 export default function Game() {
-    const [question, setQuestion] = useState(1);
-    const [validate, setValidate] = useState(false);
 
-    const [selectedPlayer, setSelectedPlayer] = useState([{ name: '' }]);
-    const [selectedPlayerIMG, setSelectedPlayerIMG] = useState(undefined);
 
-    const [correctAnswer, setCorrectAnswer] = useState();
-    const [answers, setAnswers] = useState([]);
+    const { selectedPlayer, selectedPlayerIMG, answers, correctAnswer } = useContext(GlobalState)
+    const [questionNumber, setQuestionNumber] = useState(1);
 
     const [score, setScore] = useState(0);
 
-
-    const rawParameters = ['height', 'weight', 'birthDate', 'age', 'nation', 'foot', 'position', 'defending', 'dribbling']
-    const rawQuestions = {
-        height: 'Qual é sua altura em cm?',
-        weight: 'Qual seu peso médio em kg?',
-        birthDate: 'Qual sua data de nascimento?',
-        age: 'Qual sua idade?',
-        nation: 'Por qual seleção o jogador atua?',
-        foot: 'Qual seu pé dominante?',
-        position: 'Em que posição joga no campo?',
-        defending: 'Qual dos atributos o jogador tem mais destaque: Defesa ou Drible?',
-        dribbling: 'Qual dos atributos o jogador tem mais destaque: Defesa ou Drible?'
-    }
-
-    var totalPages = 811;
-    var currentPage = getRandomInt(1, totalPages)
+    const totalPages = 811;
+    const currentPage = getRandomInt(1, totalPages)
 
     const CounterRef = useRef(null);
     const QuestionRef = useRef(null);
     const EndgameRef = useRef(null);
 
-    async function getImage(id) {
-        const response = await fetch(`https://futdb.app/api/players/${id}/image`, {
-            headers: {
-                'Content-Type': 'image/png',
-                "x-auth-token": '4c79e552-34cb-44cc-bcc7-518299c8e98a'
-            }
-        });
-        const imageBlob = await response.blob();
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setSelectedPlayerIMG(imageObjectURL)
-
-    }
     async function getPlayers() {
         const response = await api.get("api/players", {
             params: {
@@ -63,64 +37,56 @@ export default function Game() {
 
     }
 
-    function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     function timeOut() {
         console.log("timeOut")
-        if (question === 10) {
-            return endgame();
+        return check(0);
+    }
+
+    function evaluator(value) {
+        if (String(value) === String(correctAnswer)) {
+            document.getElementById(questionNumber).style.backgroundColor = 'green'
+            return setScore(scoreDisplay + 1)
+        } else {
+            document.getElementById(questionNumber).style.backgroundColor = 'red'
+        }
+    }
+
+    function check(value) {
+        // confere se respondeu certo
+        evaluator(value)
+        // if comparando se questão é igual a 10, se sim entra, se n entra no else
+        if (questionNumber === 10) {
+            CounterRef.current.stopTimer();
+            return endgame()
         } else {
             return nextQuestion();
         }
     }
 
-    function evaluator(value) {
-        if (question === 10 && !validate) {
-            if (String(value) === String(correctAnswer)) {
-                document.getElementById(question).style.backgroundColor = 'green'
-                return setScore(score + 1)
-            }else{
-                document.getElementById(question).style.backgroundColor = 'red'
-            }
-        } else if (!validate) {
-            if (String(value) === String(correctAnswer)) {
-                document.getElementById(question).style.backgroundColor = 'green'
-                return setScore(score + 1)
-            }else{
-                document.getElementById(question).style.backgroundColor = 'red'
-            }
-        }
-    }
-
     function nextQuestion() {
         console.log("nextQuestion");
-        document.getElementById('img').src = loading;
-        if (question !== 10) {
-            setQuestion(question + 1);
-            QuestionRef.current.nextQuestion();
-            CounterRef.current.restartTimer();
-        } else {
-            setValidate(true);
-            CounterRef.current.stopTimer();
-            return endgame();
-        }
-
+        document.getElementById('img').src = loading; // muda p img de carregando
+        setQuestionNumber(questionNumberDisplay + 1); // seta questão +=1
+        QuestionRef.current.nextQuestion(); // diz para componente filho alterar questão
+        CounterRef.current.restartTimer(); // restart timer
     }
 
     function endgame() {
         console.log("endgame")
-        EndgameRef.current.endgame(score)
+        // chama modal com score e única opção é voltando para tela principal
+        EndgameRef.current.endgame(scoreDisplay)
     }
 
     useEffect(() => {
+        console.log("effect")
         getPlayers()
     }, [])
 
+    const questionNumberDisplay = useMemo(() => questionNumber, [questionNumber])
+    const scoreDisplay = useMemo(() => score, [score])
+
     return (
+
         <Fragment>
             <div className="Game">
 
@@ -132,7 +98,7 @@ export default function Game() {
                                     <CardTitle>
                                         <Row>
                                             <Col>
-                                                <b>Questão {question}/10</b>
+                                                <b>Questão {questionNumberDisplay}/10</b>
                                             </Col>
                                             <Col>
                                                 <Col>
@@ -144,36 +110,16 @@ export default function Game() {
                                                 </Col>
                                                 <Col>
                                                     <Row id='geral'>
-                                                        <Col id="1">
-                                                            1
-                                                        </Col>
-                                                        <Col id="2">
-                                                            2
-                                                        </Col>
-                                                        <Col id="3">
-                                                            3
-                                                        </Col>
-                                                        <Col id="4">
-                                                            4
-                                                        </Col>
-                                                        <Col id="5">
-                                                            5
-                                                        </Col>
-                                                        <Col id="6">
-                                                            6
-                                                        </Col>
-                                                        <Col id="7">
-                                                            7
-                                                        </Col>
-                                                        <Col id="8">
-                                                            8
-                                                        </Col>
-                                                        <Col id="9">
-                                                            9
-                                                        </Col>
-                                                        <Col id="10">
-                                                            10
-                                                        </Col>
+                                                        <Col id="1">1</Col>
+                                                        <Col id="2">2</Col>
+                                                        <Col id="3">3</Col>
+                                                        <Col id="4">4</Col>
+                                                        <Col id="5">5</Col>
+                                                        <Col id="6">6</Col>
+                                                        <Col id="7">7</Col>
+                                                        <Col id="8">8</Col>
+                                                        <Col id="9">9</Col>
+                                                        <Col id="10">10</Col>
                                                     </Row>
                                                 </Col>
                                             </Col>
@@ -186,20 +132,15 @@ export default function Game() {
                                         <Row>
                                             <Col>
                                                 <Label>
-                                                    <b>Sobre o jogador {selectedPlayer.name} </b>
+                                                    <b>Sobre o jogador {selectedPlayer === undefined ? '' : selectedPlayer.name} </b>
                                                 </Label>
                                             </Col>
                                         </Row>
-                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer.name}`} src={selectedPlayerIMG === undefined ? loading : selectedPlayerIMG} />
+                                        <img className='img' id="img" alt={`Jogador ${selectedPlayer === undefined ? '' : selectedPlayer.name}`}
+                                            src={selectedPlayerIMG === undefined ? loading : selectedPlayerIMG} />
                                         <Row>
                                             <Col>
-                                                <Question
-                                                    player={dataPlayer => { setSelectedPlayer(dataPlayer); getImage(dataPlayer.id) }}
-                                                    rawQuestions={rawQuestions}
-                                                    rawParameters={rawParameters}
-                                                    answersF={e => setAnswers(e)}
-                                                    correctAnswerF={e => setCorrectAnswer(e)}
-                                                    ref={QuestionRef} />
+                                                <Question ref={QuestionRef} />
                                                 <br />
                                             </Col>
                                         </Row>
@@ -208,43 +149,43 @@ export default function Game() {
                             </Col>
                         </Row>
                         {
-                            answers.length === 0 ? '' :
-                                <>
+                            answers === undefined ? '' : answers.length === 0 ? '' :
+                                <Container fluid>
                                     <Row >
                                         <Col>
                                             <Row>
-                                                <Button onClick={e => { evaluator(e.target.value); nextQuestion(answers[0]) }} value={answers[0]} key={answers[0]} className="Button" color="primary" >
+                                                <Button onClick={e => { check(e.target.value); }} value={answers[0]} key={answers[0]} className="Button" color="primary" >
                                                     {answers[0]}
                                                 </Button>
                                             </Row>
                                         </Col>
                                         <Col>
                                             <Row>
-                                                <Button onClick={e => { evaluator(e.target.value); nextQuestion(answers[1]) }} value={answers[1]} key={answers[1]} className="Button" color="success" >
+                                                <Button onClick={e => { check(e.target.value); }} value={answers[1]} key={answers[1]} className="Button" color="success" >
                                                     {answers[1]}
                                                 </Button>
                                             </Row>
                                         </Col>
                                     </Row>
-                                    {answers.length === 2 ? '' :
+                                    {answers === undefined ? '' : answers.length === 2 ? '' :
                                         <Row >
                                             <Col>
                                                 <Row>
-                                                    <Button onClick={e => { evaluator(e.target.value); nextQuestion(answers[2]) }} value={answers[2]} key={answers[2]} className="Button" color="warning" >
+                                                    <Button onClick={e => { check(e.target.value); }} value={answers[2]} key={answers[2]} className="Button" color="warning" >
                                                         {answers[2]}
                                                     </Button>
                                                 </Row>
                                             </Col>
                                             <Col>
                                                 <Row>
-                                                    <Button onClick={e => { evaluator(e.target.value); nextQuestion(answers[3]) }} value={answers[3]} key={answers[3]} className="Button" color="danger" >
+                                                    <Button onClick={e => { check(e.target.value); }} value={answers[3]} key={answers[3]} className="Button" color="danger" >
                                                         {answers[3]}
                                                     </Button>
                                                 </Row>
                                             </Col>
                                         </Row>
                                     }
-                                </>
+                                </Container>
                         }
                     </Col>
                 </Row>
