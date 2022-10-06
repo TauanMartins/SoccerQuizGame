@@ -1,30 +1,20 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useContext, useEffect } from "react";
 import { Label } from "reactstrap";
 import api from "../../services/api";
 import { countries } from '../Countries';
+import { shuffleArray } from '../RandomInt&ShuffledArray';
+import { rawQuestions, rawParameters } from "../../components/RawQuestions&Parameters";
+import { getImagePlayer } from "../ImagePlayer";
+import { GlobalState } from "../../components/GlobalState";
 
-function Question({ player, rawParameters, rawQuestions, answersF, correctAnswerF }, ref) {
+function Question({nothing},ref) {
+    const { selectedPlayer, selectedPlayerIMG, answers, correctAnswer, players, question, questionAbout, setSelectedPlayer, setSelectedPlayerIMG, setPlayers, setQuestion, setQuestionAbout, setCorrectAnswer, setAnswers } = useContext(GlobalState);
 
-    const [selectedPlayer, setSelectedPlayer] = useState()
-    const [players, setPlayers] = useState([{}]);
-    const [question, setQuestion] = useState();
-    const [questionAbout, setQuestionAbout] = useState();
-    const [correctAnswer, setCorrectAnswer] = useState();
-    const [answers, setAnswers] = useState([]);
-    var indexRandom = 1;    
+
+    var indexRandom = 1;
     var nations = countries
     var nationsShuffled = shuffleArray(nations)
-    function shuffleArray(arr) {
-        // Loop em todos os elementos
-        for (let i = arr.length - 1; i > 0; i--) {
-            // Escolhendo elemento aleatório
-            const j = Math.floor(Math.random() * (i + 1));
-            // Reposicionando elemento
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        // Retornando array com aleatoriedade
-        return arr;
-    }
+
     function generateQuestion(player) {
         // se por acaso o peso do jogador for 0 (API não preencheu), será gerada outra pergunta
         if (player.weight === 0) {
@@ -49,43 +39,36 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.height)
                 setCorrectAnswer(player.height)
-                correctAnswerF(player.height)
                 setAnswers(shuffleArray([player.height, player.height - 3, player.height + 4, player.height + 7]))
-                answersF(shuffleArray([player.height, player.height - 3, player.height + 4, player.height + 7]))
                 break;
             case 1:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.weight)
                 setCorrectAnswer(player.weight)
-                correctAnswerF(player.weight)
                 setAnswers(shuffleArray([player.weight + 6, player.weight + 2, player.weight, player.weight - 4]))
-                answersF(shuffleArray([player.weight + 6, player.weight + 2, player.weight, player.weight - 4]))
                 break;
             case 2:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.birthDate)
+
                 setCorrectAnswer(player.birthDate)
-                correctAnswerF(player.birthDate)
                 setAnswers(shuffleArray(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate]))
-                answersF(shuffleArray(['2000-01-5', '1998-04-30', '1992-07-28', player.birthDate]))
                 break;
             case 3:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.age)
+
                 setCorrectAnswer(player.age)
-                correctAnswerF(player.age)
                 setAnswers(shuffleArray([player.age + 2, player.age, player.age - 3, player.age + 1]))
-                answersF(shuffleArray([30, player.age, 28, 23]))
                 break;
             case 4:
                 let nation;
-
                 async function getNameCountries() {
                     const response = await api.get(`api/nations/${player.nation}`).then(value => {
                         const json = value.data;
                         nation = json.nation.name;
-                        correctAnswerF(nation)
-                        return answersF(shuffleArray([nation,
+                        setCorrectAnswer(nation)
+                        setAnswers(shuffleArray([nation,
                             String(nationsShuffled[0]) === String(nation) ? nationsShuffled[1] : nationsShuffled[0],
                             String(nationsShuffled[5]) === String(nation) ? nationsShuffled[6] : nationsShuffled[5],
                             String(nationsShuffled[8]) === String(nation) ? nationsShuffled[9] : nationsShuffled[8]]))
@@ -96,32 +79,23 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
                 getNameCountries()
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.nation)
-                setCorrectAnswer(player.nation)
-                setAnswers(shuffleArray([nation,
-                    String(nationsShuffled[0]) === String(nation) ? nationsShuffled[1] : nationsShuffled[0],
-                    String(nationsShuffled[5]) === String(nation) ? nationsShuffled[6] : nationsShuffled[5],
-                    String(nationsShuffled[8]) === String(nation) ? nationsShuffled[9] : nationsShuffled[8]]))
+
                 break;
             case 5:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.foot)
-                setCorrectAnswer(player.foot)
-                correctAnswerF(player.foot)
+
                 let answer = player.foot;
                 let answerOposite = answer === 'Left' ? 'Right' : 'Left';
                 setAnswers(shuffleArray([player.foot, answerOposite]))
-                answersF(shuffleArray([player.foot, answerOposite]))
+                setCorrectAnswer(player.foot)
                 break;
             case 6:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.position)
+
                 setCorrectAnswer(player.position)
-                correctAnswerF(player.position)
                 setAnswers(shuffleArray([player.position,
-                'GK' === String(player.position) ? 'ST' : 'GK',
-                'RB' === String(player.position) ? 'ST' : 'RB',
-                'CB' === String(player.position) ? 'ST' : 'CB']))
-                answersF(shuffleArray([player.position,
                 'GK' === String(player.position) ? 'ST' : 'GK',
                 'RB' === String(player.position) ? 'ST' : 'RB',
                 'CB' === String(player.position) ? 'ST' : 'CB']))
@@ -129,31 +103,25 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
             case 7:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.defending)
+
                 if (player.defending > player.dribbling) {
                     setCorrectAnswer(player.defending)
-                    correctAnswerF(player.defending)
                     setAnswers(shuffleArray(['Defesa', 'Drible']))
-                    answersF(shuffleArray(['Defesa', 'Drible']))
                 } else {
                     setCorrectAnswer(player.dribbling)
-                    correctAnswerF(player.dribbling)
                     setAnswers(shuffleArray(['Defesa', 'Drible']))
-                    answersF(shuffleArray(['Defesa', 'Drible']))
                 }
                 break;
             case 8:
                 setQuestionAbout(Object.keys(rawQuestions)[indexRandom])
                 setQuestion(rawQuestions.dribbling)
+
                 if (player.defending > player.dribbling) {
                     setCorrectAnswer(player.defending)
-                    correctAnswerF('Defesa')
                     setAnswers(shuffleArray(['Defesa', 'Drible']))
-                    answersF(shuffleArray(['Defesa', 'Drible']))
                 } else {
                     setCorrectAnswer(player.dribbling)
-                    correctAnswerF('Drible')
                     setAnswers(shuffleArray(['Defesa', 'Drible']))
-                    answersF(shuffleArray(['Defesa', 'Drible']))
                 }
                 break;
             default:
@@ -162,23 +130,20 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
     }
     ref.current = {
         setList: function (allPlayers) {
-            // abaixo uma variável com todos os jogadores
-            var listPlayers = allPlayers;
 
             // abaixo set o state player com todos os jogadores
-            setPlayers(listPlayers)
+            setPlayers(allPlayers)
 
             // abaixo o primeiro jogador é selecionado para a questão
-            setSelectedPlayer(listPlayers[0])
-
+            setSelectedPlayer(allPlayers[0])
+            getImagePlayer(allPlayers[0].id).then(e => setSelectedPlayerIMG(e))
             // abaixo é chamado o ref para jogar o jogador selecionado para componente pai
-            player(listPlayers[0]);
 
             // é mostrado o jogador
             //console.log(listPlayers[0])
 
             // gera a questão sobre o primeiro jogador especificado
-            generateQuestion(listPlayers[0])
+            generateQuestion(allPlayers[0])
 
         },
         nextQuestion: function () {
@@ -194,12 +159,11 @@ function Question({ player, rawParameters, rawQuestions, answersF, correctAnswer
 
             // a variável player é atualizada para o novo jogador
             setSelectedPlayer(players[next_player])
-
+            getImagePlayer(players[next_player].id).then(e => setSelectedPlayerIMG(e))
             // é jogado para o componente pai o novo jogador
-            player(players[next_player])
 
         },
-        ...{ selectedPlayer: selectedPlayer, players: players }
+        ...{ selectedPlayer: selectedPlayer, answers: answers, correctAnswer: correctAnswer, selectedPlayerIMG: selectedPlayerIMG }
     }
 
     useEffect(() => {

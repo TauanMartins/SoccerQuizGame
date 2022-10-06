@@ -5,6 +5,7 @@ import Game from './pages/Game';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Game2 from './pages/Game2';
+import GlobalStateProvider from './components/GlobalState';
 
 function RoutesApp() {
     return (
@@ -14,7 +15,7 @@ function RoutesApp() {
                 <div className='Body'>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/game" element={<Game />} />
+                        <Route path="/game" element={<GlobalStateProvider><Game /></GlobalStateProvider>} />
                         <Route path="/game2" element={<Game2 />} />
                     </Routes>
                 </div>

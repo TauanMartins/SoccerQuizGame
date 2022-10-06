@@ -72,6 +72,7 @@ export default function Game2() {
         if (question === 10) {
             return endgame();
         } else {
+            document.getElementById(question).style.backgroundColor = 'red'
             return nextQuestion();
         }
     }

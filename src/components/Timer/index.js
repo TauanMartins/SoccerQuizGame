@@ -2,23 +2,30 @@ import React, { forwardRef, useEffect, useMemo, useState } from "react";
 
 
 function Timer({ timeOut }, ref) {
-    var seconds = 59;
-    const [counter, setCounter] = useState(seconds)
+    const seconds = 59;
     var timer = '';
+    const [counter, setCounter] = useState(seconds)
+
+    // delay to not bug the timer
+    function rest(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
     ref.current = {
         stopTimer: function () {
-            clearTimeout(timer);
-            return setCounter(0);
+             clearTimeout(timer);
 
         },
-        restartTimer: function () {
+        restartTimer: async function () {
             clearTimeout(timer);
-            return setCounter(seconds);
+            await rest(500);
+            setCounter(seconds);
         },
         ...{ counter: counter }
     }
 
     useEffect(() => {
+        clearTimeout(timer);
         if (counter > 0) {
             timer = setTimeout(() => {
                 setCounter(counter - 1)
@@ -33,7 +40,7 @@ function Timer({ timeOut }, ref) {
 
     return (
         <span>
-            <b>Tempo:  0:{counterDisplayer<10?'0'+counterDisplayer:counterDisplayer} segundos</b>
+            <b>Tempo:  0:{counterDisplayer < 10 ? '0' + counterDisplayer : counterDisplayer} segundos</b>
         </span>
     )
 }
