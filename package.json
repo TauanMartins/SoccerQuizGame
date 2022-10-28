@@ -2,7 +2,7 @@
   "name": "soccerquizgame",
   "version": "0.1.0",
   "engines": {
-    "node": "18.x"
+    "node": "16.17.1"
   },
   "private": true,
   "dependencies": {
